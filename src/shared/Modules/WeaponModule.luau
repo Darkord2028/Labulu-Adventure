@@ -5,8 +5,8 @@ local Weapons = {
 		Damage = 5,
 		Range = 3,
 	},
-	["Iron Sword"] = {
-		Name = "IronSwordModel",
+	["Pick Axe"] = {
+		ModelName = "PickAxeModel",
 		Description = "A sturdy sword made of iron.",
 		Damage = 15,
 		Range = 4,
