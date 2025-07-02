@@ -63,6 +63,34 @@ function WeaponManager:EquipWeapon(player, weaponName)
 		anim = animId,
 		animObj = animObj,
 	}
+
+	-- Inside EquipWeapon
+	local hitbox = weapon:FindFirstChild("Hitbox")
+	local debounce = {}
+
+	if hitbox then
+		hitbox.Touched:Connect(function(other)
+			local enemy = other.Parent
+			if not enemy then
+				return
+			end
+
+			if debounce[enemy] then
+				return
+			end
+			debounce[enemy] = true
+
+			local enemyHumanoid = enemy:FindFirstChildOfClass("Humanoid")
+			if enemyHumanoid then
+				enemyHumanoid:TakeDamage(hitbox:GetAttribute("Damage") or 10)
+				print("Enemy hit:", enemy.Name)
+			end
+
+			task.delay(0.3, function()
+				debounce[enemy] = nil
+			end)
+		end)
+	end
 end
 
 function WeaponManager:Attack(player)
