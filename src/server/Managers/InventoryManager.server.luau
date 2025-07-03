@@ -13,6 +13,5 @@ local PlayerInventoryData = {
 
 GetInventory.OnServerInvoke = function(player: Player)
 	local inventoryData = PlayerInventoryData[player.Name]
-	print(inventoryData)
 	return inventoryData
 end

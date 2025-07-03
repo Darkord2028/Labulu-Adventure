@@ -17,12 +17,10 @@ local playerItems = GetInventory:InvokeServer()
 for itemName, itemData in pairs(itemsData) do
 	if itemData.Enabled == true then
 		local newItem = inventoryTemplate:Clone()
-		print("Item cloned")
 		newItem.Visible = false
 		newItem.Parent = inventoryScroll
 		newItem.Name = itemName
 		newItem.ImageButton.Image = itemData.Image
-		newItem.ImageButton.ImageColor3 = itemData.Color
 		newItem:AddTag(itemData.ItemType)
 		newItem.ImageButton:AddTag("InventoryItem")
 	end
