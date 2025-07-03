@@ -14,5 +14,4 @@ local Weapons = {
 		AttackAnimation = "rbxassetid://129151358971827",
 	},
 }
-
 return Weapons

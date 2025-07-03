@@ -8,7 +8,6 @@ WeaponManager.PlayerWeapons = {}
 
 function WeaponManager:EquipWeapon(player, weaponName)
 	local weaponData = WeaponModule[weaponName]
-	print(weaponData["Pick Axe"])
 	if not weaponData then
 		warn("Weapon not found:", weaponName)
 		return
