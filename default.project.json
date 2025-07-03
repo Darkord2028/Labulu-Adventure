@@ -15,12 +15,10 @@
 
     "StarterPlayer": {
       "$className": "StarterPlayer",
-
       "StarterPlayerScripts": {
         "$className": "StarterPlayerScripts",
         "$path": "src/client/StarterPlayerScripts"
       },
-
       "StarterCharacterScripts": {
         "$className": "StarterCharacterScripts",
         "$path": "src/client/StarterCharacterScripts"
@@ -37,6 +35,22 @@
           "Locked": true,
           "Position": [0, -10, 0],
           "Size": [512, 20, 512]
+        }
+      }
+    },
+
+    "StarterGui": {
+      "$className": "StarterGui",
+      "Scripts": {
+        "$className": "Folder",
+        "$path": "src/client/StarterGui/Scripts",
+        "Inventory": {
+          "$className": "LocalScript",
+          "$path": "src/client/StarterGui/Scripts/Inventory.client.luau"
+        },
+        "ItemData": {
+          "$className": "ModuleScript",
+          "$path": "src/client/StarterGui/Scripts/ItemData.lua"
         }
       }
     },
