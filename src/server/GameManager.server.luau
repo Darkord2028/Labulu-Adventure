@@ -10,6 +10,6 @@ end)
 
 Players.PlayerAdded:Connect(function(player)
 	player.CharacterAdded:Connect(function(character)
-		WeaponManager:EquipWeapon(player, "Tree Branch")
+		WeaponManager:EquipWeapon(player, "TreeBranch")
 	end)
 end)

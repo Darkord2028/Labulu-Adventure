@@ -47,7 +47,8 @@ function WeaponManager:EquipWeapon(player, weaponName)
 	weapon:SetAttribute("Damage", weaponData.Damage)
 
 	local animId = weaponData.AttackAnimation
-	local animObj = Animations:FindFirstChild("Attack")
+	local animObjPrefab = Animations:FindFirstChild("Attack")
+	local animObj = animObjPrefab:Clone()
 	animObj.AnimationId = animId
 
 	local humanoid = character:FindFirstChildOfClass("Humanoid")
@@ -136,7 +137,7 @@ function WeaponManager:Attack(player)
 
 	track:Play()
 
-	track.stopped:Connect(function()
+	track.Stopped:Connect(function()
 		humanoid.WalkSpeed = originalSpeed
 	end)
 end

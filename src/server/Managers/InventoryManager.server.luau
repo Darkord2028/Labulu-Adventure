@@ -1,13 +1,18 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
+local WeaponModule = require(ReplicatedStorage.Modules.WeaponModule)
+
 local GetInventory = ReplicatedStorage.RemoteFunctions.GetInventory
 
 local PlayerInventoryData = {
 
 	XRCentral = {
-		Branch = { uses = 2 },
-		Sword = { uses = 5 },
-		Shield = { uses = 1 },
+		TreeBranch = {
+			uses = 2,
+		},
+		PickAxe = {
+			uses = 5,
+		},
 	},
 }
 

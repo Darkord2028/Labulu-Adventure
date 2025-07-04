@@ -8,7 +8,7 @@ local InventoryGUI = playerGui:WaitForChild("InventoryGUI")
 local inventoryTemplate = playerGui.Template:WaitForChild("InventoryTemplate")
 local inventoryScroll = InventoryGUI.Inventory.Scroll
 
-local itemsData = require(ReplicatedStorage.Modules.ItemData)
+local itemsData = require(ReplicatedStorage.Modules.WeaponModule)
 
 local GetInventory = ReplicatedStorage:WaitForChild("RemoteFunctions"):WaitForChild("GetInventory")
 local playerItems = GetInventory:InvokeServer()
@@ -43,6 +43,5 @@ end
 local ToggleInventoryButton = InventoryGUI.ToggleInventoryButton
 
 ToggleInventoryButton.MouseButton1Click:Connect(function()
-	print("ToggleInventoryButton clicked")
 	InventoryGUI.Inventory.Visible = not InventoryGUI.Inventory.Visible
 end)
