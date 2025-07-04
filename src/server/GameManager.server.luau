@@ -1,15 +1,17 @@
-local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
 local WeaponManager = require(ReplicatedStorage:WaitForChild("Managers"):WaitForChild("WeaponManager"))
+
+-- Remote Events
 local Events = ReplicatedStorage:WaitForChild("Events")
-local attackEvent = Events:WaitForChild("AttackRequest")
+local attackEvent = Events:WaitForChild("AttackRequestEvent")
+local equipEvent = Events:WaitForChild("EquipWeaponEvent")
+--local addItemEvent = Events:WaitForChild("AddItemEvent")
 
 attackEvent.OnServerEvent:Connect(function(player)
 	WeaponManager:Attack(player)
 end)
 
-Players.PlayerAdded:Connect(function(player)
-	player.CharacterAdded:Connect(function(character)
-		WeaponManager:EquipWeapon(player, "TreeBranch")
-	end)
+equipEvent.OnServerEvent:Connect(function(player, weaponName)
+	WeaponManager:EquipWeapon(player, weaponName)
 end)

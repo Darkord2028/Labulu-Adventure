@@ -114,8 +114,8 @@ function WeaponManager:Attack(player)
 		return
 	end
 
-	local originalSpeed = humanoid.WalkSpeed
-	humanoid.WalkSpeed = 0
+	--local originalSpeed = humanoid.WalkSpeed
+	--humanoid.WalkSpeed = 0
 
 	local track = animator:LoadAnimation(data.animObj)
 	track.Priority = Enum.AnimationPriority.Action
@@ -137,9 +137,8 @@ function WeaponManager:Attack(player)
 
 	track:Play()
 
-	track.Stopped:Connect(function()
-		humanoid.WalkSpeed = originalSpeed
-	end)
+	--track.Stopped:Wait()
+	--humanoid.WalkSpeed = originalSpeed
 end
 
 return WeaponManager
