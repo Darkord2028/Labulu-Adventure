@@ -16,18 +16,14 @@ finishedAttackEvent.OnClientEvent:Connect(function()
 	isAttacking = false
 end)
 
+equipEvent.OnClientEvent:Connect(function(weaponName)
+	isWeaponEquipped = true
+	print("Weapon equipped:", weaponName)
+end)
+
 UserInputService.InputBegan:Connect(function(input, gameProcessed)
 	if gameProcessed then
 		return
-	end
-
-	if
-		input.UserInputType == Enum.UserInputType.Keyboard
-		and input.KeyCode == Enum.KeyCode.E
-		and not isWeaponEquipped
-	then
-		isWeaponEquipped = true
-		equipEvent:FireServer("TreeBranch")
 	end
 
 	if input.UserInputType == Enum.UserInputType.MouseButton1 and isWeaponEquipped and not isAttacking then

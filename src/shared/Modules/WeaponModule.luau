@@ -8,7 +8,7 @@ local Weapons = {
 		Cost = 0,
 		AttackAnimation = "rbxassetid://129151358971827",
 		Enabled = true,
-		Image = "rbxassetid://1091279834",
+		Image = "rbxthumb://type=Asset&id=74079277949819&w=420&h=420",
 	},
 	PickAxe = {
 		Order = 2,
@@ -19,7 +19,7 @@ local Weapons = {
 		Cost = 50,
 		AttackAnimation = "rbxassetid://129151358971827",
 		Enabled = true,
-		Image = "rbxassetid://17753344129",
+		Image = "rbxthumb://type=Asset&id=122835836751989&w=420&h=420",
 	},
 	WoodenSword = {
 		Order = 3,
@@ -30,7 +30,7 @@ local Weapons = {
 		Cost = 80,
 		AttackAnimation = "rbxassetid://129151358971827",
 		Enabled = true,
-		Image = "rbxassetid://1091279834",
+		Image = "rbxthumb://type=Asset&id=113049250248805&w=420&h=420",
 	},
 	StoneSword = {
 		Order = 4,
@@ -41,7 +41,7 @@ local Weapons = {
 		Cost = 120,
 		AttackAnimation = "rbxassetid://129151358971827",
 		Enabled = true,
-		Image = "rbxassetid://1091279834",
+		Image = "rbxthumb://type=Asset&id=112135309772165&w=420&h=420",
 	},
 	CopperSword = {
 		Order = 5,
@@ -52,7 +52,7 @@ local Weapons = {
 		Cost = 160,
 		AttackAnimation = "rbxassetid://129151358971827",
 		Enabled = true,
-		Image = "rbxassetid://1091279834",
+		Image = "rbxthumb://type=Asset&id=121051288476772&w=420&h=420",
 	},
 	IronSword = {
 		Order = 6,

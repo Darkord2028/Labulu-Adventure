@@ -14,7 +14,7 @@ game.Players.PlayerAdded:Connect(function(player)
 
 	local xp = Instance.new("IntValue")
 	xp.Name = "XP"
-	xp.Value = 0
+	xp.Value = 1000
 	xp.Parent = leaderstats
 end)
 
@@ -24,4 +24,5 @@ end)
 
 equipEvent.OnServerEvent:Connect(function(player, weaponName)
 	WeaponManager:EquipWeapon(player, weaponName)
+	equipEvent:FireClient(player, weaponName)
 end)
