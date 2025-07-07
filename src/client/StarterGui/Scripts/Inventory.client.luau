@@ -39,13 +39,14 @@ for _, weapon in ipairs(sortedWeapons) do
 	entry.Name = name
 	entry.ImageButton.Image = data.Image
 	entry.ImageButton.WeaponName.Text = data.Name
+	entry.ImageButton.XPCost.Text = "XP -" .. tostring(data.Cost or 0)
 	entry.Parent = inventoryScroll
 
 	entry.LockOverlay.Visible = true
 
 	entry.ImageButton.Activated:Connect(function()
 		if not entry.LockOverlay.Visible then
-			EquipEvent:FireServer(name)
+			EquipEvent:FireServer(name, data.Image)
 		end
 	end)
 

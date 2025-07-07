@@ -2,7 +2,7 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local UserInputService = game:GetService("UserInputService")
 
--- Player
+-- Players
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 
@@ -16,6 +16,11 @@ local DisplayDamagePopUpEvent = Events:WaitForChild("DisplayDamagePopUpEvent")
 local DamagePopUpPoolModule = require(ReplicatedStorage:WaitForChild("Modules"):WaitForChild("DamagePopUpPoolModule"))
 local DamagePopUpPool = DamagePopUpPoolModule.new(20)
 
+-- GUI
+local PlayerGui = LocalPlayer.PlayerGui
+local InventoryGUI = PlayerGui:WaitForChild("InventoryGUI")
+local CurrentWeapon = InventoryGUI.CurrentWeapon
+
 -- Local Player Flags
 local isWeaponEquipped = false
 local isAttacking = false
@@ -24,8 +29,9 @@ finishedAttackEvent.OnClientEvent:Connect(function()
 	isAttacking = false
 end)
 
-equipEvent.OnClientEvent:Connect(function(weaponName)
+equipEvent.OnClientEvent:Connect(function(weaponImage)
 	isWeaponEquipped = true
+	CurrentWeapon.Image = weaponImage
 end)
 
 DisplayDamagePopUpEvent.OnClientEvent:Connect(function(position, damage)
