@@ -68,7 +68,6 @@ local ToggleInventoryButton = InventoryGUI.ToggleInventoryButton
 
 ToggleInventoryButton.MouseButton1Click:Connect(function()
 	InventoryGUI.Inventory.Visible = not InventoryGUI.Inventory.Visible
-	print("Inventory toggled:", InventoryGUI.Inventory.Visible)
 end)
 
 refreshLocks()

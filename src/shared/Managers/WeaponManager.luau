@@ -6,6 +6,7 @@ local Animations = ReplicatedStorage:WaitForChild("Animations")
 -- Events
 local Events = ReplicatedStorage:WaitForChild("Events")
 local finishedAttackEvent = Events:WaitForChild("FinishedAttackEvent")
+local DisplayDamagePopUpEvent = Events:WaitForChild("DisplayDamagePopUpEvent")
 
 local WeaponManager = {}
 WeaponManager.PlayerWeapons = {}
@@ -60,6 +61,7 @@ local function getOrCreateWeapon(player: Player, weaponName: string)
 	local debounce = {}
 
 	if hitbox then
+		hitbox:SetAttribute("Damage", wDef.Damage)
 		hitbox.Touched:Connect(function(other)
 			local enemy = other.Parent
 			if not enemy then
@@ -70,11 +72,12 @@ local function getOrCreateWeapon(player: Player, weaponName: string)
 				return
 			end
 			debounce[enemy] = true
-
 			local enemyHumanoid = enemy:FindFirstChildOfClass("Humanoid")
+			local enemyHead = enemy:FindFirstChild("Head") or enemy:FindFirstChild("HumanoidRootPart")
 			if enemyHumanoid then
-				enemyHumanoid:TakeDamage(hitbox:GetAttribute("Damage") or 10)
-				print("Enemy hit:", enemy.Name)
+				local dmg = hitbox:GetAttribute("Damage") or 10
+				enemyHumanoid:TakeDamage(dmg)
+				DisplayDamagePopUpEvent:FireClient(player, enemyHead, dmg)
 			end
 
 			task.delay(0.3, function()
