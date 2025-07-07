@@ -6,7 +6,17 @@ local WeaponManager = require(ReplicatedStorage:WaitForChild("Managers"):WaitFor
 local Events = ReplicatedStorage:WaitForChild("Events")
 local attackEvent = Events:WaitForChild("AttackRequestEvent")
 local equipEvent = Events:WaitForChild("EquipWeaponEvent")
---local addItemEvent = Events:WaitForChild("AddItemEvent")
+
+game.Players.PlayerAdded:Connect(function(player)
+	local leaderstats = Instance.new("Folder")
+	leaderstats.Name = "leaderstats"
+	leaderstats.Parent = player
+
+	local xp = Instance.new("IntValue")
+	xp.Name = "XP"
+	xp.Value = 0
+	xp.Parent = leaderstats
+end)
 
 attackEvent.OnServerEvent:Connect(function(player)
 	WeaponManager:Attack(player)

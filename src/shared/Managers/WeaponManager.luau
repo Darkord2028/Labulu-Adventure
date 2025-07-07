@@ -3,6 +3,10 @@ local WeaponModule = require(ReplicatedStorage:WaitForChild("Modules"):WaitForCh
 local WeaponModels = ReplicatedStorage:WaitForChild("Weapons")
 local Animations = ReplicatedStorage:WaitForChild("Animations")
 
+-- Events
+local Events = ReplicatedStorage:WaitForChild("Events")
+local finishedAttackEvent = Events:WaitForChild("FinishedAttackEvent")
+
 local WeaponManager = {}
 WeaponManager.PlayerWeapons = {}
 
@@ -137,8 +141,9 @@ function WeaponManager:Attack(player)
 
 	track:Play()
 
-	--track.Stopped:Wait()
-	--humanoid.WalkSpeed = originalSpeed
+	track.Stopped:Connect(function()
+		finishedAttackEvent:FireClient(player)
+	end)
 end
 
 return WeaponManager

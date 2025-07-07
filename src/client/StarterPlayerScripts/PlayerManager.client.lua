@@ -6,10 +6,15 @@ local UserInputService = game:GetService("UserInputService")
 local Events = ReplicatedStorage:WaitForChild("Events")
 local attackEvent = Events:WaitForChild("AttackRequestEvent")
 local equipEvent = Events:WaitForChild("EquipWeaponEvent")
-local addItemEvent = Events:WaitForChild("AddItemEvent")
+local finishedAttackEvent = Events:WaitForChild("FinishedAttackEvent")
 
 -- Local Player Flags
 local isWeaponEquipped = false
+local isAttacking = false
+
+finishedAttackEvent.OnClientEvent:Connect(function()
+	isAttacking = false
+end)
 
 UserInputService.InputBegan:Connect(function(input, gameProcessed)
 	if gameProcessed then
@@ -24,10 +29,9 @@ UserInputService.InputBegan:Connect(function(input, gameProcessed)
 		isWeaponEquipped = true
 		equipEvent:FireServer("TreeBranch")
 	end
-	if input.UserInputType == Enum.UserInputType.MouseButton1 and isWeaponEquipped then
+
+	if input.UserInputType == Enum.UserInputType.MouseButton1 and isWeaponEquipped and not isAttacking then
 		attackEvent:FireServer()
-	end
-	if input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode == Enum.KeyCode.Q then
-		addItemEvent:FireServer("TreeBranch", 1)
+		isAttacking = true
 	end
 end)
