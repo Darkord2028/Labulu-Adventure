@@ -16,6 +16,12 @@ game.Players.PlayerAdded:Connect(function(player)
 	xp.Name = "XP"
 	xp.Value = 1000
 	xp.Parent = leaderstats
+
+	player.CharacterAdded:Connect(function(char)
+		char:WaitForChild("Humanoid") -- Ensure character is fully loaded
+		WeaponManager:EquipWeapon(player, "TreeBranch")
+		equipEvent:FireClient(player, "rbxthumb://type=Asset&id=74079277949819&w=420&h=420")
+	end)
 end)
 
 attackEvent.OnServerEvent:Connect(function(player)

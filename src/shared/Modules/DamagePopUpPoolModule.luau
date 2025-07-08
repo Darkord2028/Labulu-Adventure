@@ -46,6 +46,15 @@ end
 function DamagePopUpPool:Display(head, damage)
 	local popup = self:Get()
 	popup.Text.Text = tostring(damage)
+
+	-- Add random horizontal offset (left/right and forward/back)
+	local randomOffset = Vector3.new(
+		math.random(-2, 2),
+		2 + math.random(), -- keep Y a bit elevated
+		math.random(-2, 2)
+	)
+	popup.StudsOffset = randomOffset
+
 	popup.Parent = head
 	popup.Enabled = true
 

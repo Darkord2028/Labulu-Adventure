@@ -21,6 +21,13 @@ local PlayerGui = LocalPlayer.PlayerGui
 local InventoryGUI = PlayerGui:WaitForChild("InventoryGUI")
 local CurrentWeapon = InventoryGUI.CurrentWeapon
 
+-- Audio
+local Audio = ReplicatedStorage:WaitForChild("Audio")
+local DamageAudio = Audio:WaitForChild("Damage")
+DamageAudio.Volume = 0.5
+local EquipAudio = Audio:WaitForChild("Equip")
+EquipAudio.Volume = 0.5
+
 -- Local Player Flags
 local isWeaponEquipped = false
 local isAttacking = false
@@ -31,11 +38,13 @@ end)
 
 equipEvent.OnClientEvent:Connect(function(weaponImage)
 	isWeaponEquipped = true
+	EquipAudio:Play()
 	CurrentWeapon.Image = weaponImage
 end)
 
 DisplayDamagePopUpEvent.OnClientEvent:Connect(function(position, damage)
 	DamagePopUpPool:Display(position, damage)
+	DamageAudio:Play()
 end)
 
 UserInputService.InputBegan:Connect(function(input, gameProcessed)

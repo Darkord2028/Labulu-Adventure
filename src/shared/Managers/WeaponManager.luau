@@ -52,9 +52,8 @@ local function getOrCreateWeapon(player: Player, weaponName: string)
 	model.Parent = pdata.storage -- keep out of sight until equipped
 	model.PrimaryPart = model:FindFirstChild("Handle") or model.PrimaryPart
 
-	-- prepare animation asset
-	local baseAnim = Animations:FindFirstChild("Attack")
-	local animObj = baseAnim:Clone()
+	local animObj = Instance.new("Animation")
+	animObj.Name = weaponName .. "_AttackAnim"
 	animObj.AnimationId = wDef.AttackAnimation
 
 	local hitbox = model:FindFirstChild("Hitbox")
@@ -92,6 +91,9 @@ local function getOrCreateWeapon(player: Player, weaponName: string)
 		hitbox = model:FindFirstChild("Hitbox"),
 		animObj = animObj,
 	}
+
+	pdata.weapons[weaponName].hitbox.CanTouch = false
+
 	return pdata.weapons[weaponName]
 end
 
