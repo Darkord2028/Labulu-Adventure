@@ -14,7 +14,7 @@ game.Players.PlayerAdded:Connect(function(player)
 
 	local xp = Instance.new("IntValue")
 	xp.Name = "XP"
-	xp.Value = 1000
+	xp.Value = 0
 	xp.Parent = leaderstats
 
 	player.CharacterAdded:Connect(function(char)

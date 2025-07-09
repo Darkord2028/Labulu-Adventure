@@ -6,12 +6,17 @@ local UserInputService = game:GetService("UserInputService")
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 
+-- Leaderboard
+local leaderboard = LocalPlayer:WaitForChild("leaderstats")
+local XP = leaderboard:WaitForChild("XP")
+
 -- Events
 local Events = ReplicatedStorage:WaitForChild("Events")
 local attackEvent = Events:WaitForChild("AttackRequestEvent")
 local equipEvent = Events:WaitForChild("EquipWeaponEvent")
 local finishedAttackEvent = Events:WaitForChild("FinishedAttackEvent")
 local DisplayDamagePopUpEvent = Events:WaitForChild("DisplayDamagePopUpEvent")
+local EnemyDiedEvent = Events:WaitForChild("EnemyDiedEvent")
 
 local DamagePopUpPoolModule = require(ReplicatedStorage:WaitForChild("Modules"):WaitForChild("DamagePopUpPoolModule"))
 local DamagePopUpPool = DamagePopUpPoolModule.new(20)
@@ -20,6 +25,7 @@ local DamagePopUpPool = DamagePopUpPoolModule.new(20)
 local PlayerGui = LocalPlayer.PlayerGui
 local InventoryGUI = PlayerGui:WaitForChild("InventoryGUI")
 local CurrentWeapon = InventoryGUI.CurrentWeapon
+local XPTextLabel = InventoryGUI.XP
 
 -- Audio
 local Audio = ReplicatedStorage:WaitForChild("Audio")
@@ -45,6 +51,11 @@ end)
 DisplayDamagePopUpEvent.OnClientEvent:Connect(function(position, damage)
 	DamagePopUpPool:Display(position, damage)
 	DamageAudio:Play()
+end)
+
+EnemyDiedEvent.OnClientEvent:Connect(function(xpReward)
+	XP.Value = XP.Value + xpReward
+	XPTextLabel.Text = XP.Value
 end)
 
 UserInputService.InputBegan:Connect(function(input, gameProcessed)

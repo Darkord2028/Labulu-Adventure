@@ -1,9 +1,7 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local WeaponModule = require(ReplicatedStorage:WaitForChild("Modules"):WaitForChild("WeaponModule"))
 local WeaponModels = ReplicatedStorage:WaitForChild("Weapons")
-local Animations = ReplicatedStorage:WaitForChild("Animations")
 
--- Events
 local Events = ReplicatedStorage:WaitForChild("Events")
 local finishedAttackEvent = Events:WaitForChild("FinishedAttackEvent")
 local DisplayDamagePopUpEvent = Events:WaitForChild("DisplayDamagePopUpEvent")
@@ -18,11 +16,9 @@ local function makeStorageFolder(player: Player): Folder
 	return folder
 end
 
--- Create (or fetch) cached weapon data for this player
 local function getOrCreateWeapon(player: Player, weaponName: string)
 	local pdata = WeaponManager.PlayerWeapons[player.UserId]
 	if not pdata then
-		-- first time for this player
 		pdata = {
 			storage = makeStorageFolder(player),
 			current = nil,
@@ -31,12 +27,10 @@ local function getOrCreateWeapon(player: Player, weaponName: string)
 		WeaponManager.PlayerWeapons[player.UserId] = pdata
 	end
 
-	-- already cached?
 	if pdata.weapons[weaponName] then
 		return pdata.weapons[weaponName]
 	end
 
-	-- otherwise build it once
 	local wDef = WeaponModule[weaponName]
 	if not wDef then
 		return nil
@@ -49,55 +43,22 @@ local function getOrCreateWeapon(player: Player, weaponName: string)
 	end
 
 	local model = modelSrc:Clone()
-	model.Parent = pdata.storage -- keep out of sight until equipped
+	model.Parent = pdata.storage
 	model.PrimaryPart = model:FindFirstChild("Handle") or model.PrimaryPart
 
 	local animObj = Instance.new("Animation")
 	animObj.Name = weaponName .. "_AttackAnim"
 	animObj.AnimationId = wDef.AttackAnimation
 
-	local hitbox = model:FindFirstChild("Hitbox")
-	local debounce = {}
-
-	if hitbox then
-		hitbox:SetAttribute("Damage", wDef.Damage)
-		hitbox.Touched:Connect(function(other)
-			local enemy = other.Parent
-			if not enemy then
-				return
-			end
-
-			if debounce[enemy] then
-				return
-			end
-			debounce[enemy] = true
-			local enemyHumanoid = enemy:FindFirstChildOfClass("Humanoid")
-			local enemyHead = enemy:FindFirstChild("Head") or enemy:FindFirstChild("HumanoidRootPart")
-			if enemyHumanoid then
-				local dmg = hitbox:GetAttribute("Damage") or 10
-				enemyHumanoid:TakeDamage(dmg)
-				DisplayDamagePopUpEvent:FireClient(player, enemyHead, dmg)
-			end
-
-			task.delay(0.3, function()
-				debounce[enemy] = nil
-			end)
-		end)
-	end
-
-	-- cache
 	pdata.weapons[weaponName] = {
 		model = model,
-		hitbox = model:FindFirstChild("Hitbox"),
 		animObj = animObj,
+		def = wDef,
 	}
-
-	pdata.weapons[weaponName].hitbox.CanTouch = false
 
 	return pdata.weapons[weaponName]
 end
 
--- Detach any existing Motor6D we added
 local function clearOldMotor(model: Model)
 	if not model.PrimaryPart then
 		return
@@ -125,7 +86,6 @@ function WeaponManager:EquipWeapon(player: Player, weaponName: string)
 		return
 	end
 
-	-- Unequip current
 	if pdata.current then
 		local oldData = pdata.weapons[pdata.current]
 		if oldData and oldData.model and oldData.model.Parent == char then
@@ -134,7 +94,6 @@ function WeaponManager:EquipWeapon(player: Player, weaponName: string)
 		end
 	end
 
-	-- Equip requested weapon
 	local weaponModel = weaponData.model
 	if not weaponModel.PrimaryPart then
 		warn("Weapon has no PrimaryPart:", weaponName)
@@ -143,7 +102,7 @@ function WeaponManager:EquipWeapon(player: Player, weaponName: string)
 
 	local rightHand = char:FindFirstChild("RightHand") or char:FindFirstChild("Right Arm")
 	if not rightHand then
-		warn("Character missing right hand")
+		warn("Missing right hand")
 		return
 	end
 
@@ -179,17 +138,34 @@ function WeaponManager:Attack(player: Player)
 	local track = animator:LoadAnimation(weaponData.animObj)
 	track.Priority = Enum.AnimationPriority.Action
 
-	local hitbox = weaponData.hitbox
-	if hitbox then
-		track:GetMarkerReachedSignal("EnableHitbox"):Connect(function()
-			hitbox.CanTouch = true
-			hitbox.BrickColor = BrickColor.new("Bright red")
-		end)
-		track:GetMarkerReachedSignal("DisableHitbox"):Connect(function()
-			hitbox.CanTouch = false
-			hitbox.BrickColor = BrickColor.new("Bright blue")
-		end)
-	end
+	track:GetMarkerReachedSignal("EnableHitbox"):Connect(function()
+		local rootPart = char:FindFirstChild("HumanoidRootPart")
+		if not rootPart then
+			return
+		end
+
+		local rayOrigin = rootPart.Position
+		local rayDirection = rootPart.CFrame.LookVector * 6
+
+		local raycastParams = RaycastParams.new()
+		raycastParams.FilterType = Enum.RaycastFilterType.Exclude
+		raycastParams.FilterDescendantsInstances = { char }
+
+		local result = workspace:Raycast(rayOrigin, rayDirection, raycastParams)
+		if result then
+			local enemy = result.Instance:FindFirstAncestorOfClass("Model")
+			local enemyHumanoid = enemy and enemy:FindFirstChildOfClass("Humanoid")
+			local enemyHead = enemy and (enemy:FindFirstChild("Head") or enemy:FindFirstChild("HumanoidRootPart"))
+
+			if enemy and enemyHumanoid and enemyHumanoid.Health > 0 then
+				local damage = weaponData.def.Damage or 10
+				enemyHumanoid:TakeDamage(damage)
+				if enemyHead then
+					DisplayDamagePopUpEvent:FireClient(player, enemyHead, damage)
+				end
+			end
+		end
+	end)
 
 	track:Play()
 	track.Stopped:Connect(function()
