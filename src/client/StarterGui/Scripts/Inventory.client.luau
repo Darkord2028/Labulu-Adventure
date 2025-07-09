@@ -4,6 +4,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local LocalPlayer = Players.LocalPlayer
 local playerGui = LocalPlayer.PlayerGui
 local InventoryGUI = playerGui:WaitForChild("InventoryGUI")
+InventoryGUI.IgnoreGuiInset = true
 
 local inventoryTemplate = playerGui.Template:WaitForChild("InventoryTemplate")
 local inventoryScroll = InventoryGUI.Inventory.Scroll

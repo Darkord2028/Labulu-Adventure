@@ -18,7 +18,7 @@ function DamagePopUpPool.new(size)
 		textLabel.Name = "Text"
 		textLabel.Size = UDim2.new(1, 0, 1, 0)
 		textLabel.BackgroundTransparency = 1
-		textLabel.TextColor3 = Color3.new(1, 0, 0)
+		textLabel.TextColor3 = Color3.new(0.917647, 0.729412, 0.215686)
 		textLabel.TextScaled = false
 		textLabel.TextSize = 53
 		textLabel.Font = Enum.Font.Bangers

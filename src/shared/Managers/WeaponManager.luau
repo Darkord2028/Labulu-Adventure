@@ -6,6 +6,11 @@ local Events = ReplicatedStorage:WaitForChild("Events")
 local finishedAttackEvent = Events:WaitForChild("FinishedAttackEvent")
 local DisplayDamagePopUpEvent = Events:WaitForChild("DisplayDamagePopUpEvent")
 
+-- Raycast Variables
+local rayCount = 5
+local damageArcAngle = math.rad(90)
+local rayLength = 6
+
 local WeaponManager = {}
 WeaponManager.PlayerWeapons = {}
 
@@ -14,6 +19,19 @@ local function makeStorageFolder(player: Player): Folder
 	folder.Name = "WeaponStorage"
 	folder.Parent = player
 	return folder
+end
+
+local function drawRay(origin: Vector3, direction: Vector3, color: Color3)
+	local part = Instance.new("Part")
+	part.Anchored = true
+	part.CanCollide = false
+	part.Size = Vector3.new(0.1, 0.1, direction.Magnitude)
+	part.CFrame = CFrame.new(origin + direction / 2, origin + direction)
+	part.Color = color or Color3.new(1, 0, 0)
+	part.Material = Enum.Material.Neon
+	part.Parent = workspace
+
+	game:GetService("Debris"):AddItem(part, 0.3)
 end
 
 local function getOrCreateWeapon(player: Player, weaponName: string)
@@ -145,23 +163,34 @@ function WeaponManager:Attack(player: Player)
 		end
 
 		local rayOrigin = rootPart.Position
-		local rayDirection = rootPart.CFrame.LookVector * 6
+		local rootCFrame = rootPart.CFrame
 
 		local raycastParams = RaycastParams.new()
 		raycastParams.FilterType = Enum.RaycastFilterType.Exclude
 		raycastParams.FilterDescendantsInstances = { char }
 
-		local result = workspace:Raycast(rayOrigin, rayDirection, raycastParams)
-		if result then
-			local enemy = result.Instance:FindFirstAncestorOfClass("Model")
-			local enemyHumanoid = enemy and enemy:FindFirstChildOfClass("Humanoid")
-			local enemyHead = enemy and (enemy:FindFirstChild("Head") or enemy:FindFirstChild("HumanoidRootPart"))
+		local hitEnemies = {}
 
-			if enemy and enemyHumanoid and enemyHumanoid.Health > 0 then
-				local damage = weaponData.def.Damage or 10
-				enemyHumanoid:TakeDamage(damage)
-				if enemyHead then
-					DisplayDamagePopUpEvent:FireClient(player, enemyHead, damage)
+		for i = 0, rayCount - 1 do
+			local t = (i / (rayCount - 1)) * 2 - 1
+			local angle = t * (damageArcAngle / 2)
+			local rotatedDirection = (rootCFrame * CFrame.Angles(0, angle, 0)).LookVector
+
+			--drawRay(rayOrigin, rotatedDirection * rayLength, Color3.fromRGB(255, 255, 0)) -- Debug line
+
+			local result = workspace:Raycast(rayOrigin, rotatedDirection * rayLength, raycastParams)
+			if result then
+				local enemy = result.Instance:FindFirstAncestorOfClass("Model")
+				local enemyHumanoid = enemy and enemy:FindFirstChildOfClass("Humanoid")
+				local enemyHead = enemy and (enemy:FindFirstChild("Head") or enemy:FindFirstChild("HumanoidRootPart"))
+
+				if enemy and enemyHumanoid and enemyHumanoid.Health > 0 and not hitEnemies[enemy] then
+					hitEnemies[enemy] = true
+					local damage = weaponData.def.Damage or 10
+					enemyHumanoid:TakeDamage(damage)
+					if enemyHead then
+						DisplayDamagePopUpEvent:FireClient(player, enemyHead, damage)
+					end
 				end
 			end
 		end
