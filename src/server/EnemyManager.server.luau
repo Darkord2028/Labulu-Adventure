@@ -1,7 +1,6 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local HttpService = game:GetService("HttpService")
 local CollectionService = game:GetService("CollectionService")
-local Workspace = game:GetService("Workspace")
 
 local Enemies = ReplicatedStorage:WaitForChild("Enemies")
 local Events = ReplicatedStorage:WaitForChild("Events")
