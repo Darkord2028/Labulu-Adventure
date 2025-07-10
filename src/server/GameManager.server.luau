@@ -12,10 +12,10 @@ game.Players.PlayerAdded:Connect(function(player)
 	leaderstats.Name = "leaderstats"
 	leaderstats.Parent = player
 
-	local xp = Instance.new("IntValue")
-	xp.Name = "XP"
-	xp.Value = 0
-	xp.Parent = leaderstats
+	local Money = Instance.new("IntValue")
+	Money.Name = "Money"
+	Money.Value = 0
+	Money.Parent = leaderstats
 
 	player.CharacterAdded:Connect(function(char)
 		char:WaitForChild("Humanoid") -- Ensure character is fully loaded
@@ -28,7 +28,7 @@ attackEvent.OnServerEvent:Connect(function(player)
 	WeaponManager:Attack(player)
 end)
 
-equipEvent.OnServerEvent:Connect(function(player, weaponName, weaponImage)
+equipEvent.OnServerEvent:Connect(function(player, weaponName)
 	WeaponManager:EquipWeapon(player, weaponName)
-	equipEvent:FireClient(player, weaponImage)
+	equipEvent:FireClient(player, weaponName)
 end)

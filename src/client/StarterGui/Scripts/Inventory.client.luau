@@ -16,8 +16,8 @@ local Events = ReplicatedStorage:WaitForChild("Events")
 local EquipEvent = Events:WaitForChild("EquipWeaponEvent")
 
 -- Data
-local playerXP = LocalPlayer:WaitForChild("leaderstats"):WaitForChild("XP")
-local currentXP = playerXP.Value
+local playerMoney = LocalPlayer:WaitForChild("leaderstats"):WaitForChild("Money")
+local currentMoney = playerMoney.Value
 
 local cache = {}
 
@@ -47,7 +47,7 @@ for _, weapon in ipairs(sortedWeapons) do
 
 	entry.ImageButton.Activated:Connect(function()
 		if not entry.LockOverlay.Visible then
-			EquipEvent:FireServer(name, data.Image)
+			EquipEvent:FireServer(name)
 		end
 	end)
 
@@ -57,12 +57,12 @@ end
 local function refreshLocks()
 	for name, entry in pairs(cache) do
 		local cost = itemsData[name].Cost or 0
-		entry.LockOverlay.Visible = currentXP < cost
+		entry.LockOverlay.Visible = currentMoney < cost
 	end
 end
 
-playerXP:GetPropertyChangedSignal("Value"):Connect(function()
-	currentXP = playerXP.Value
+playerMoney:GetPropertyChangedSignal("Value"):Connect(function()
+	currentMoney = playerMoney.Value
 	refreshLocks()
 end)
 

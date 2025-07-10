@@ -7,13 +7,15 @@ local RunService = game:GetService("RunService")
 -- Players
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
+local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+local head = character:FindFirstChild("Head")
 
 -- Camera
 local cam = Workspace.CurrentCamera
 
 -- Leaderboard
 local leaderboard = LocalPlayer:WaitForChild("leaderstats")
-local XP = leaderboard:WaitForChild("XP")
+local Money = leaderboard:WaitForChild("Money")
 
 -- Events
 local Events = ReplicatedStorage:WaitForChild("Events")
@@ -23,16 +25,17 @@ local finishedAttackEvent = Events:WaitForChild("FinishedAttackEvent")
 local DisplayDamagePopUpEvent = Events:WaitForChild("DisplayDamagePopUpEvent")
 local EnemyDiedEvent = Events:WaitForChild("EnemyDiedEvent")
 
-local DamagePopUpPoolModule = require(ReplicatedStorage:WaitForChild("Modules"):WaitForChild("DamagePopUpPoolModule"))
-local DamagePopUpPool = DamagePopUpPoolModule.new(20)
+local Modules = ReplicatedStorage:WaitForChild("Modules")
+local DamagePopUpPoolModule = require(Modules:WaitForChild("DamagePopUpPoolModule"))
+local DamagePopUpPool = DamagePopUpPoolModule.new(5)
+
+local MoneyPoolModule = require(Modules:WaitForChild("MoneyPoolModule"))
+MoneyPool = MoneyPoolModule.new(5)
 
 -- GUI
 local PlayerGui = LocalPlayer.PlayerGui
 local InventoryGUI = PlayerGui:WaitForChild("InventoryGUI")
-local PlayerName = InventoryGUI.PlayerNameFrame.NameTextLabel
-PlayerName.Text = LocalPlayer.Name
-local CurrentWeaponImage = InventoryGUI.CurrentWeapon
-local XPTextLabel = InventoryGUI.XPFrame.XP
+local MoneyTextLabel = InventoryGUI.MoneyFrame.Money
 
 -- Audio
 local Audio = ReplicatedStorage:WaitForChild("Audio")
@@ -40,31 +43,12 @@ local DamageAudio = Audio:WaitForChild("Damage")
 DamageAudio.Volume = 0.5
 local EquipAudio = Audio:WaitForChild("Equip")
 EquipAudio.Volume = 0.5
-
--- Weapons
-local itemsData = require(ReplicatedStorage.Modules.WeaponModule)
-
--- XP
-local CurrentXP = 0
-local XPForNextLevel = 0
+local CashCollect = Audio:WaitForChild("CashCollect")
+CashCollect.Volume = 0.5
 
 -- Local Player Flags
 local isWeaponEquipped = false
 local isAttacking = false
-
-local function UpdateXP(XPReward)
-	for _, data in pairs(itemsData) do
-		if data.Enabled then
-			if data.Cost >= XPReward then
-				CurrentXP = XPReward
-				XPForNextLevel = data.Cost
-				print(CurrentXP .. " " .. XPForNextLevel)
-			end
-		else
-			print("Weapon Ended")
-		end
-	end
-end
 
 local function screenShake(duration, magnitude)
 	local startTime = tick()
@@ -91,10 +75,10 @@ finishedAttackEvent.OnClientEvent:Connect(function()
 	isAttacking = false
 end)
 
-equipEvent.OnClientEvent:Connect(function(weaponImage)
+equipEvent.OnClientEvent:Connect(function(weapon)
 	isWeaponEquipped = true
 	EquipAudio:Play()
-	CurrentWeaponImage.Image = weaponImage
+	print("Weapon Name = " .. weapon)
 end)
 
 DisplayDamagePopUpEvent.OnClientEvent:Connect(function(position, damage)
@@ -104,9 +88,10 @@ DisplayDamagePopUpEvent.OnClientEvent:Connect(function(position, damage)
 end)
 
 EnemyDiedEvent.OnClientEvent:Connect(function(xpReward)
-	XP.Value = XP.Value + xpReward
-	XPTextLabel.Text = XP.Value
-	UpdateXP(xpReward)
+	Money.Value = Money.Value + xpReward
+	MoneyTextLabel.Text = Money.Value
+	MoneyPool:Display(head, xpReward / 10)
+	CashCollect:Play()
 end)
 
 UserInputService.InputBegan:Connect(function(input, gameProcessed)

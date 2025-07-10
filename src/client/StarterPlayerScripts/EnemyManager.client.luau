@@ -2,6 +2,9 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local HttpService = game:GetService("HttpService")
 local CollectionService = game:GetService("CollectionService")
 
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
 local Enemies = ReplicatedStorage:WaitForChild("Enemies")
 local Events = ReplicatedStorage:WaitForChild("Events")
 local EnemyDiedEvent = Events:WaitForChild("EnemyDiedEvent")
@@ -52,7 +55,7 @@ local function spawnEnemyAt(spawnPart)
 		humanoid.Health = humanoid.MaxHealth
 
 		humanoid.Died:Connect(function()
-			EnemyDiedEvent:FireAllClients(xpReward)
+			EnemyDiedEvent:FireAllClients(50)
 			enemyModel:Destroy()
 			usedPoints[spawnPart] = nil -- Mark spawn point as available
 			spawnCount += 1
